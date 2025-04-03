@@ -1,31 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
 
 const NotesList = ({ notes, deleteNote }) => {
-  if (!notes || notes.length === 0) {
-    return <p className="text-gray-400 text-center mt-5">No notes available.</p>;
-  }
+  const [editingIndex, setEditingIndex] = useState(null);
+  const [editedNote, setEditedNote] = useState({ title: "", description: "" });
+
+  const startEditing = (index, note) => {
+    setEditingIndex(index);
+    setEditedNote(note);
+  };
+
+  const handleEditChange = (e, field) => {
+    setEditedNote({ ...editedNote, [field]: e.target.value });
+  };
+
+  const saveEdit = (index) => {
+    notes[index] = editedNote;
+    setEditingIndex(null);
+  };
 
   return (
-    <div className="space-y-4">
-      {notes.map((note) => (
-        <div
-          key={note._id}
-          className="bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 relative"
-        >
-          <h3 className="text-lg font-semibold text-white mb-2">{note.title}</h3>
-          <p className="text-gray-300">{note.content}</p>
-          <div className="flex gap-2 mt-3">
-            <button
-              className="bg-gray-600 hover:bg-gray-500 text-white px-3 py-1 rounded"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => deleteNote(note._id)}
-              className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded"
-            >
-              Delete
-            </button>
+    <div className="notes-container">
+      {notes.map((note, index) => (
+        <div key={index} className="note-item">
+          {editingIndex === index ? (
+            <div>
+              <input
+                type="text"
+                value={editedNote.title}
+                onChange={(e) => handleEditChange(e, "title")}
+              />
+              <textarea
+                value={editedNote.description}
+                onChange={(e) => handleEditChange(e, "description")}
+              />
+              <button className="button save-button" onClick={() => saveEdit(index)}>Save</button>
+            </div>
+          ) : (
+            <div>
+              <h3>{note.title}</h3>
+              <p>{note.description}</p>
+            </div>
+          )}
+          <div className="note-buttons">
+            <button className="button edit-button" onClick={() => startEditing(index, note)}>Edit</button>
+            <button className="button delete-button" onClick={() => deleteNote(index)}>Delete</button>
           </div>
         </div>
       ))}

@@ -1,35 +1,34 @@
 import React, { useState } from "react";
 
-const NoteForm = ({ addNote }) => {
+const NoteForm = ({ addNote, setIsCreating }) => {
   const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
+  const [description, setDescription] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    addNote(title, content);
-    setTitle("");
-    setContent("");
+  const handleSave = () => {
+    if (title.trim() || description.trim()) {
+      addNote({ title, description });
+      setIsCreating(false); 
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-gray-800 p-4 rounded-lg mb-4">
+    <div className="note-form">
       <input
         type="text"
         placeholder="Title"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="w-full p-2 mb-3 bg-gray-700 text-white rounded outline-none"
       />
       <textarea
-        placeholder="Content"
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        className="w-full p-2 bg-gray-700 text-white rounded outline-none h-20"
+        placeholder="Write Anything..."
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
       ></textarea>
-      <button className="w-full py-2 mt-3 bg-blue-600 text-white rounded hover:bg-blue-700">
-        Save
-      </button>
-    </form>
+      <div className="button-container">
+        <button className="button" onClick={() => setIsCreating(false)}>Back</button>
+        <button className="button save-button" onClick={handleSave}>Save</button>
+      </div>
+    </div>
   );
 };
 
