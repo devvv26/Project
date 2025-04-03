@@ -1,54 +1,26 @@
-import React, { useState } from "react";
+import React from "react";
 
 const NotesList = ({ notes, deleteNote }) => {
-  const [editingIndex, setEditingIndex] = useState(null);
-  const [editedNote, setEditedNote] = useState({ title: "", description: "" });
-
-  const startEditing = (index, note) => {
-    setEditingIndex(index);
-    setEditedNote(note);
-  };
-
-  const handleEditChange = (e, field) => {
-    setEditedNote({ ...editedNote, [field]: e.target.value });
-  };
-
-  const saveEdit = (index) => {
-    notes[index] = editedNote;
-    setEditingIndex(null);
-  };
-
-  return (
-    <div className="notes-container">
-      {notes.map((note, index) => (
-        <div key={index} className="note-item">
-          {editingIndex === index ? (
-            <div>
-              <input
-                type="text"
-                value={editedNote.title}
-                onChange={(e) => handleEditChange(e, "title")}
-              />
-              <textarea
-                value={editedNote.description}
-                onChange={(e) => handleEditChange(e, "description")}
-              />
-              <button className="button save-button" onClick={() => saveEdit(index)}>Save</button>
-            </div>
-          ) : (
-            <div>
-              <h3>{note.title}</h3>
-              <p>{note.description}</p>
-            </div>
-          )}
-          <div className="note-buttons">
-            <button className="button edit-button" onClick={() => startEditing(index, note)}>Edit</button>
-            <button className="button delete-button" onClick={() => deleteNote(index)}>Delete</button>
-          </div>
+    return (
+        <div className="row">
+            {notes.length > 0 ? (
+                notes.map((note, index) => (
+                    <div className="card mx-2 my-2" style={{ width: "18rem" }} key={index}>
+                        <div className="card-body">
+                            <p align="right" style={{ color: "brown" }}>{note.date}</p>
+                            <h5 className="card-title">{note.title}</h5>
+                            <p className="card-text">{note.text}</p>
+                            <button className="btn btn-info" onClick={() => deleteNote(index)}>
+                                Delete Note
+                            </button>
+                        </div>
+                    </div>
+                ))
+            ) : (
+                <h5>Yet You Have Not Created Any <b>Note</b> !</h5>
+            )}
         </div>
-      ))}
-    </div>
-  );
+    );
 };
 
 export default NotesList;

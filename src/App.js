@@ -1,40 +1,44 @@
-import React, { useState } from "react";
-import NotesList from "./components/NotesList";
+import React, { useState, useEffect } from "react";
 import NoteForm from "./components/NoteForm";
+import NotesList from "./components/NotesList";
 import "./App.css";
 
-function App() {
-  const [notes, setNotes] = useState([]);
-  const [isCreating, setIsCreating] = useState(false);
+const App = () => {
+    const [notes, setNotes] = useState([]);
 
-  const addNote = (newNote) => {
-    setNotes([...notes, newNote]);
-  };
+    // Load notes from localStorage
+    useEffect(() => {
+        const savedNotes = JSON.parse(localStorage.getItem("notes")) || [];
+        setNotes(savedNotes);
+    }, []);
 
-  const deleteNote = (index) => {
-    const updatedNotes = notes.filter((_, i) => i !== index);
-    setNotes(updatedNotes);
-  };
+    // Save notes to localStorage
+    const saveNotes = (updatedNotes) => {
+        localStorage.setItem("notes", JSON.stringify(updatedNotes));
+        setNotes(updatedNotes);
+    };
 
-  const clearAllNotes = () => {
-    setNotes([]);
-  };
+    // Add a new note
+    const addNote = (title, text) => {
+        if (!title || !text) return;
+        const newNote = { title, text, date: new Date().toLocaleDateString() };
+        saveNotes([...notes, newNote]);
+    };
 
-  return (
-    <div className="app-container">
-      <h1 className="app-title">Notes App</h1>
-      {!isCreating ? (
-        <div>
-          <button className="button" onClick={() => setIsCreating(true)}>Create Note</button>
-          <h2 className="collection-title">Collection</h2>
-          <button className="clear-button" onClick={clearAllNotes}>Clear All</button>
-          <NotesList notes={notes} deleteNote={deleteNote} />
+    // Delete a note
+    const deleteNote = (index) => {
+        const updatedNotes = notes.filter((_, i) => i !== index);
+        saveNotes(updatedNotes);
+    };
+
+    return (
+        <div className="container my-3">
+            <h1>Welcome To Notes.com</h1>
+            <NoteForm addNote={addNote} />
+            <h2>Your Notes:</h2>
+            <NotesList notes={notes} deleteNote={deleteNote} />
         </div>
-      ) : (
-        <NoteForm addNote={addNote} setIsCreating={setIsCreating} />
-      )}
-    </div>
-  );
-}
+    );
+};
 
 export default App;
