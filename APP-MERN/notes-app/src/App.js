@@ -27,7 +27,7 @@ const App = () => {
     return (
         <div className="container">
             <header>Notes App</header>
-            <h1>Welcome To Notes.com</h1>
+            <h1>Welcome To Notes</h1>
             <div className="note-input">
                 <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Title Of Note" />
                 <textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="Add A Note"></textarea>
