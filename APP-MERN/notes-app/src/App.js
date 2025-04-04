@@ -1,42 +1,48 @@
-import React, { useState, useEffect } from "react";
-import NoteForm from "./components/NoteForm";
-import NotesList from "./components/NotesList";
-import "./App.css";
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import './App.css';
 
 const App = () => {
     const [notes, setNotes] = useState([]);
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
 
-    // Load notes from localStorage
     useEffect(() => {
-        const savedNotes = JSON.parse(localStorage.getItem("notes")) || [];
-        setNotes(savedNotes);
+        axios.get('http://localhost:5000/notes').then(res => setNotes(res.data));
     }, []);
 
-    // Save notes to localStorage
-    const saveNotes = (updatedNotes) => {
-        localStorage.setItem("notes", JSON.stringify(updatedNotes));
-        setNotes(updatedNotes);
+    const addNote = () => {
+        if (!title || !description) return;
+        axios.post('http://localhost:5000/notes', { title, description }).then(res => {
+            setNotes([...notes, res.data]);
+            setTitle('');
+            setDescription('');
+        });
     };
 
-    // Add a new note
-    const addNote = (title, text) => {
-        if (!title || !text) return;
-        const newNote = { title, text, date: new Date().toLocaleDateString() };
-        saveNotes([...notes, newNote]);
-    };
-
-    // Delete a note
-    const deleteNote = (index) => {
-        const updatedNotes = notes.filter((_, i) => i !== index);
-        saveNotes(updatedNotes);
+    const deleteNote = (id) => {
+        axios.delete(`http://localhost:5000/notes/${id}`).then(() => setNotes(notes.filter(note => note.id !== id)));
     };
 
     return (
-        <div className="container my-3">
+        <div className="container">
+            <header>Notes App</header>
             <h1>Welcome To Notes.com</h1>
-            <NoteForm addNote={addNote} />
-            <h2>Your Notes:</h2>
-            <NotesList notes={notes} deleteNote={deleteNote} />
+            <div className="note-input">
+                <input value={title} onChange={e => setTitle(e.target.value)} placeholder="Title Of Note" />
+                <textarea value={description} onChange={e => setDescription(e.target.value)} placeholder="Add A Note"></textarea>
+                <button onClick={addNote}>Add a Note</button>
+            </div>
+            <h2>Your Notes :</h2>
+            <ul>
+                {notes.length === 0 ? <p>Yet You Have Not Created Any Note !</p> : notes.map(note => (
+                    <li key={note.id}>
+                        <h3>{note.title}</h3>
+                        <p>{note.description}</p>
+                        <button onClick={() => deleteNote(note.id)}>Delete</button>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 };

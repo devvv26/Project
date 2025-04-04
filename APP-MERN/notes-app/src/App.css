@@ -1,82 +1,35 @@
-body {
-  font-family: "San Francisco", sans-serif;
-  background-color: #f4f4f4;
+.container {
+  font-family: 'San Francisco', sans-serif;
+  max-width: 800px;
+  margin: auto;
 }
-
-.app-container {
-  text-align: center;
-  padding: 20px;
-}
-
-.app-title {
-  font-size: 2rem;
-  font-weight: bold;
-}
-
-.button {
-  background-color: #007bff;
+header {
+  background: #333;
   color: white;
-  padding: 10px 15px;
-  border: none;
-  cursor: pointer;
-  margin: 10px;
-  font-size: 1rem;
-  border-radius: 5px;
+  padding: 10px;
+  text-align: center;
 }
-
-.clear-button {
-  background-color: #dc3545;
-  font-size: 0.8rem;
-  margin-left: 10px;
-}
-
-.note-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.note-form input, .note-form textarea {
-  width: 80%;
+.note-input input, .note-input textarea {
+  display: block;
+  width: 100%;
   margin: 10px 0;
-  padding: 8px;
-  font-size: 1rem;
+  padding: 10px;
   border: 1px solid #ccc;
 }
-
-.button-container {
-  display: flex;
-  justify-content: space-between;
-  width: 80%;
-}
-
-.notes-container {
-  margin-top: 20px;
-}
-
-.note-item {
-  background-color: white;
+.note-input button {
+  background: teal;
+  color: white;
   padding: 10px;
-  margin: 10px auto;
-  width: 80%;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  border: none;
+  cursor: pointer;
 }
-
-.note-buttons {
-  display: none;
+ul {
+  list-style: none;
+  padding: 0;
 }
-
-.note-item:hover .note-buttons {
-  display: block;
-}
-
-.edit-button {
-  background-color: #ffc107;
-}
-
-.delete-button {
-  background-color: #dc3545;
+ul li {
+  background: #f4f4f4;
+  margin: 10px 0;
+  padding: 10px;
+  border-left: 5px solid teal;
 }

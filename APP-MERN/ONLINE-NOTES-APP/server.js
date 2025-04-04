@@ -1,44 +1,52 @@
 const express = require('express');
 const fs = require('fs');
 const cors = require('cors');
-const app = express();
-const PORT = 5000;
-const notesFile = './data/notes.json';
+const path = require('path');
 
+const app = express();
 app.use(express.json());
 app.use(cors());
 
-// Ensure notes file exists
-if (!fs.existsSync(notesFile)) {
-    fs.writeFileSync(notesFile, '[]', 'utf8');
-}
+const NOTES_FILE = path.join(__dirname, 'notes.json');
 
-app.get('/api/notes', (req, res) => {
-  fs.readFile(notesFile, 'utf8', (err, data) => {
-      if (err) return res.status(500).json({ error: 'Failed to read notes' });
-      try {
-          const notes = JSON.parse(data);
-          res.json(Array.isArray(notes) ? notes : []); // Always return an array
-      } catch (parseError) {
-          res.json([]); // Handle JSON parse errors
-      }
-  });
+// Load notes from file
+const loadNotes = () => {
+    try {
+        return JSON.parse(fs.readFileSync(NOTES_FILE));
+    } catch (error) {
+        return [];
+    }
+};
+
+// Save notes to file
+const saveNotes = (notes) => fs.writeFileSync(NOTES_FILE, JSON.stringify(notes, null, 2));
+
+// API Routes
+app.get('/notes', (req, res) => res.json(loadNotes()));
+
+app.post('/notes', (req, res) => {
+    const notes = loadNotes();
+    const newNote = { id: Date.now(), ...req.body };
+    notes.push(newNote);
+    saveNotes(notes);
+    res.json(newNote);
 });
 
-
-app.post('/api/notes', (req, res) => {
-    const { title, description } = req.body;
-    if (!title || !description) return res.status(400).json({ error: 'Title and description are required' });
-
-    fs.readFile(notesFile, 'utf8', (err, data) => {
-        let notes = data ? JSON.parse(data) : [];
-        notes.push({ title, description });
-
-        fs.writeFile(notesFile, JSON.stringify(notes, null, 2), 'utf8', (writeErr) => {
-            if (writeErr) return res.status(500).json({ error: 'Failed to save note' });
-            res.json({ message: 'Note saved successfully', note: { title, description } });
-        });
-    });
+app.put('/notes/:id', (req, res) => {
+    const notes = loadNotes().map(note => note.id == req.params.id ? { ...note, ...req.body } : note);
+    saveNotes(notes);
+    res.json({ message: 'Note updated' });
 });
 
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
+app.delete('/notes/:id', (req, res) => {
+    const notes = loadNotes().filter(note => note.id != req.params.id);
+    saveNotes(notes);
+    res.json({ message: 'Note deleted' });
+});
+
+app.delete('/notes', (req, res) => {
+    saveNotes([]);
+    res.json({ message: 'All notes cleared' });
+});
+
+app.listen(5000, () => console.log('Server running on port 5000'));
