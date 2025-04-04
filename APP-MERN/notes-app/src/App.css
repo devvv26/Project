@@ -1,0 +1,82 @@
+body {
+  font-family: "San Francisco", sans-serif;
+  background-color: #f4f4f4;
+}
+
+.app-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.app-title {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  cursor: pointer;
+  margin: 10px;
+  font-size: 1rem;
+  border-radius: 5px;
+}
+
+.clear-button {
+  background-color: #dc3545;
+  font-size: 0.8rem;
+  margin-left: 10px;
+}
+
+.note-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.note-form input, .note-form textarea {
+  width: 80%;
+  margin: 10px 0;
+  padding: 8px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+}
+
+.button-container {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+}
+
+.notes-container {
+  margin-top: 20px;
+}
+
+.note-item {
+  background-color: white;
+  padding: 10px;
+  margin: 10px auto;
+  width: 80%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.note-buttons {
+  display: none;
+}
+
+.note-item:hover .note-buttons {
+  display: block;
+}
+
+.edit-button {
+  background-color: #ffc107;
+}
+
+.delete-button {
+  background-color: #dc3545;
+}
